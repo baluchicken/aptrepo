@@ -1,0 +1,12 @@
+Package: hello-world
+Version: 0.0.1
+Architecture: arm64
+Maintainer: baluchicken <bmolnar@cisco.com>
+Filename: pool/main/hello-world_0.0.1-1_arm64.deb
+Size: 2792
+MD5sum: a95aff5a46d2c0338440a311fa3608e7
+SHA1: d17cd37d6d9a0f52a0df7c201e22bc06452ad0b8
+SHA256: c6b6b8fb9abce01cad75d5580c022c3a1a3060ac21361a6bb01a5a6fd0dfa46d
+Homepage: http://baluchicken.com
+Description: A program that prints hello
+

@@ -1,0 +1,6 @@
+Package: hello-world
+Version: 0.0.1
+Maintainer: baluchicken <bmolnar@cisco.com>
+Architecture: arm64
+Homepage: http://baluchicken.com
+Description: A program that prints hello
