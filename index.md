@@ -6,8 +6,8 @@ title: baluchicken.github.io/aptrepo
 
 ### Add a Debian Repository
 
-Download the [public key](baluchicken-apt-repo.gpg) and put it in
-`/etc/apt/keyrings/baluchicken-apt-repo.gpg`. You can achieve this with:
+Download the public key and put it in
+`/etc/apt/keyrings/baluchicken-public.gpg`. You can achieve this with:
 
 ```
 wget -qO- {{ site.url }}/baluchicken-public.asc | sudo tee /etc/apt/keyrings/baluchicken-public.asc >/dev/null

@@ -34,7 +34,7 @@ main() {
         popd >/dev/null
       fi
     fi
-  done < .github/config/package_list.txt
+  done
 
   if [ $GOT_DEB -eq 1 ]
   then
