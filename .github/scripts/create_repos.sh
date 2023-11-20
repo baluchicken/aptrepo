@@ -16,25 +16,21 @@ main() {
   DEB_DISTS_COMPONENTS="${DEB_DISTS}/${COMPONENTS:-main}/binary-all"
   GPG_TTY=""
   export GPG_TTY
-  echo "Parsing the repo list"
-  while IFS= read -r repo
-  do
-    if release=$(curl -fqs https://api.github.com/repos/${repo}/releases/latest)
+  if release=$(curl -fqs https://api.github.com/repos/${repo}/releases/latest)
+  then
+    tag="$(echo "$release" | jq -r '.tag_name')"
+    deb_file="$(echo "$release" | jq -r '.assets[] | select(.name | endswith(".deb")) | .name')"
+    echo "Parsing repo $repo at $tag"
+    if [ -n "$deb_file" ]
     then
-      tag="$(echo "$release" | jq -r '.tag_name')"
-      deb_file="$(echo "$release" | jq -r '.assets[] | select(.name | endswith(".deb")) | .name')"
-      echo "Parsing repo $repo at $tag"
-      if [ -n "$deb_file" ]
-      then
-        GOT_DEB=1
-        mkdir -p "$DEB_POOL"
-        pushd "$DEB_POOL" >/dev/null
-        echo "Getting DEB"
-        wget -q "https://github.com/${repo}/releases/download/${tag}/${deb_file}"
-        popd >/dev/null
-      fi
+      GOT_DEB=1
+      mkdir -p "$DEB_POOL"
+      pushd "$DEB_POOL" >/dev/null
+      echo "Getting DEB"
+      wget -q "https://github.com/${repo}/releases/download/${tag}/${deb_file}"
+      popd >/dev/null
     fi
-  done
+  fi
 
   if [ $GOT_DEB -eq 1 ]
   then
