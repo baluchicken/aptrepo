@@ -12,7 +12,7 @@ generate_hashes() {
 main() {
   GOT_DEB=0
   DEB_POOL="_site/deb/pool/main"
-  DEB_DISTS_COMPONENTS="dists/stable/main/binary-all"
+  DEB_DISTS_COMPONENTS="dists/stable/main/binary-arm64"
   if release=$(curl -fqs https://api.github.com/repos/baluchicken/aptrepo/releases/latest)
   then
     tag="$(echo "$release" | jq -r '.tag_name')"
@@ -34,7 +34,7 @@ main() {
     pushd _site/deb >/dev/null
     mkdir -p "${DEB_DISTS_COMPONENTS}"
     echo "Scanning all downloaded DEB Packages and creating Packages file."
-    dpkg-scanpackages --arch all pool/ > "${DEB_DISTS_COMPONENTS}/Packages"
+    dpkg-scanpackages --arch arm64 pool/ > "${DEB_DISTS_COMPONENTS}/Packages"
     gzip -9 > "${DEB_DISTS_COMPONENTS}/Packages.gz" < "${DEB_DISTS_COMPONENTS}/Packages"
     bzip2 -9 > "${DEB_DISTS_COMPONENTS}/Packages.bz2" < "${DEB_DISTS_COMPONENTS}/Packages"
     popd >/dev/null
@@ -46,7 +46,7 @@ main() {
       echo "Suite: stable"
       echo "Codename: stable"
       echo "Version: 1.0"
-      echo "Architectures: all"
+      echo "Architectures: arm64"
       echo "Components: main"
       echo "Description: A repository for packages released by ${REPO_OWNER}}"
       echo "Date: $(date -Ru)"
