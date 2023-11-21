@@ -10,12 +10,10 @@ generate_hashes() {
 }
 
 main() {
+  COMPONENTS="hello-world"
   GOT_DEB=0
   DEB_POOL="_site/deb/pool/${COMPONENTS:-main}"
-  DEB_DISTS="dists/${SUITE:-stable}"
-  DEB_DISTS_COMPONENTS="${DEB_DISTS}/${COMPONENTS:-main}/binary-all"
-  GPG_TTY=""
-  export GPG_TTY
+  DEB_DISTS_COMPONENTS="dists/stable/${COMPONENTS:-main}/binary-all"
   if release=$(curl -fqs https://api.github.com/repos/baluchicken/aptrepo/releases/latest)
   then
     tag="$(echo "$release" | jq -r '.tag_name')"
@@ -41,17 +39,17 @@ main() {
     gzip -9 > "${DEB_DISTS_COMPONENTS}/Packages.gz" < "${DEB_DISTS_COMPONENTS}/Packages"
     bzip2 -9 > "${DEB_DISTS_COMPONENTS}/Packages.bz2" < "${DEB_DISTS_COMPONENTS}/Packages"
     popd >/dev/null
-    pushd "_site/deb/${DEB_DISTS}" >/dev/null
+    pushd "_site/deb/dists/stable/" >/dev/null
     echo "Making Release file"
     {
       echo "Origin: ${ORIGIN}"
       echo "Label: ${REPO_OWNER}"
-      echo "Suite: ${SUITE:-stable}"
-      echo "Codename: ${SUITE:-stable}"
+      echo "Suite: stable"
+      echo "Codename: stable"
       echo "Version: 1.0"
       echo "Architectures: all"
       echo "Components: ${COMPONENTS:-main}"
-      echo "Description: ${DESCRIPTION:-A repository for packages released by ${REPO_OWNER}}"
+      echo "Description: A repository for packages released by ${REPO_OWNER}}"
       echo "Date: $(date -Ru)"
       generate_hashes MD5Sum md5sum
       generate_hashes SHA1 sha1sum
