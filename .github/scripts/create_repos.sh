@@ -3,17 +3,16 @@ generate_hashes() {
   HASH_TYPE="$1"
   HASH_COMMAND="$2"
   echo "${HASH_TYPE}:"
-  find "${COMPONENTS:-main}" -type f | while read -r file
+  find "main" -type f | while read -r file
   do
     echo " $(${HASH_COMMAND} "$file" | cut -d" " -f1) $(wc -c "$file")"
   done
 }
 
 main() {
-  COMPONENTS="hello-world"
   GOT_DEB=0
-  DEB_POOL="_site/deb/pool/${COMPONENTS:-main}"
-  DEB_DISTS_COMPONENTS="dists/stable/${COMPONENTS:-main}/binary-all"
+  DEB_POOL="_site/deb/pool/main"
+  DEB_DISTS_COMPONENTS="dists/stable/main/binary-all"
   if release=$(curl -fqs https://api.github.com/repos/baluchicken/aptrepo/releases/latest)
   then
     tag="$(echo "$release" | jq -r '.tag_name')"
@@ -48,7 +47,7 @@ main() {
       echo "Codename: stable"
       echo "Version: 1.0"
       echo "Architectures: all"
-      echo "Components: ${COMPONENTS:-main}"
+      echo "Components: main"
       echo "Description: A repository for packages released by ${REPO_OWNER}}"
       echo "Date: $(date -Ru)"
       generate_hashes MD5Sum md5sum
