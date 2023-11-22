@@ -16,7 +16,7 @@ wget -qO- {{ site.url }}/baluchicken-public.asc | sudo tee /etc/apt/keyrings/bal
 Next, create the source in `/etc/apt/sources.list.d/`
 
 ```
-echo "deb [arch=arm64 signed-by=/etc/apt/keyrings/baluchicken-public.asc] {{ site.url }}/deb stable main" | sudo tee /etc/apt/sources.list.d/baluchicken-public.list >/dev/null
+echo "deb [arch=all signed-by=/etc/apt/keyrings/baluchicken-public.asc] {{ site.url }}/deb stable main" | sudo tee /etc/apt/sources.list.d/baluchicken-public.list >/dev/null
 ```
 
 Then run `apt update && apt install -y` and the names of the packages you want to install.
