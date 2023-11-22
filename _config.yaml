@@ -7,7 +7,7 @@ url: "https://baluchicken.github.io/aptrepo"
 github_username: baluchicken
 
 # Build settings
-theme: minima
+theme: minimal
 plugins:
   - jekyll-feed
 exclude:
