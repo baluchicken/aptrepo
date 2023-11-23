@@ -15,7 +15,7 @@ main() {
   DEB_POOL="_site/deb/pool/main"
   DEB_DISTS_COMPONENTS="dists/stable/main/binary-all"
 
-  REPOS_PATH="config/gh_projects"
+  REPOS_PATH=".github/config/gh_projects"
 
   #Check if the file exists
   if [ ! -f "$REPOS_PATH" ]
