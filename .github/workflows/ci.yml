@@ -1,8 +1,8 @@
 name: Deploy Debian and RPM Repo plus Jekyll homepage
 
 on:
-  push:
-    branches: ["main"]
+  release:
+    types: ["published"]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -28,7 +28,7 @@ jobs:
           do
             sleep 1
           done
-          sudo apt install -y jq coreutils gnupg2 dpkg-dev
+          sudo apt install -y jq coreutils gnupg2 dpkg-dev createrepo_c
 
       - name: Insert environment variables
         run: |

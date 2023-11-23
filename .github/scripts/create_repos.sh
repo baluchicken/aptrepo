@@ -11,23 +11,55 @@ generate_hashes() {
 
 main() {
   GOT_DEB=0
+  GOT_RPM=0
   DEB_POOL="_site/deb/pool/main"
   DEB_DISTS_COMPONENTS="dists/stable/main/binary-all"
-  if release=$(curl -fqs https://api.github.com/repos/baluchicken/aptrepo/releases/latest)
+
+  REPOS_PATH="config/gh_projects"
+
+  #Check if the file exists
+  if [ ! -f "$REPOS_PATH" ]
   then
-    tag="$(echo "$release" | jq -r '.tag_name')"
-    deb_file="$(echo "$release" | jq -r '.assets[] | select(.name | endswith(".deb")) | .name')"
-    echo "Parsing repo /baluchicken/aptrepo at $tag"
-    if [ -n "$deb_file" ]
-    then
-      GOT_DEB=1
-      mkdir -p "$DEB_POOL"
-      pushd "$DEB_POOL" >/dev/null
-      echo "Getting DEB"
-      wget -q "https://github.com/baluchicken/aptrepo/releases/download/${tag}/${deb_file}"
-      popd >/dev/null
-    fi
+    echo "File not found: $REPO_PATH"
+    exit 1
   fi
+
+  while IFS= read -r repo;
+  do
+    if release=$(curl -fqs https://api.github.com/repos/${repo}/releases/tags/${{ github.ref_name }})
+    then
+      tag="$(echo "$release" | jq -r '.tag_name')"
+      deb_file="$(echo "$release" | jq -r '.assets[] | select(.name | endswith(".deb")) | .name')"
+      rpm_file="$(echo "$release" | jq -r '.assets[] | select(.name | endswith(".rpm")) | .name')"
+      package_name="${repo##*/}"
+      echo "Parsing repo ${repo} at $tag"
+      if [ -n "$deb_file" ]
+      then
+        GOT_DEB=1
+        mkdir -p "${DEB_POOL}/${package_name}"
+        pushd "${DEB_POOL}/${package_name}" >/dev/null
+        echo "Getting DEB"
+        wget -q "https://github.com/${repo}/releases/download/${tag}/${deb_file}"
+        popd >/dev/null
+      fi
+      if [ -n "$rpm_file" ]
+      then
+        GOT_RPM=1
+        mkdir -p _site/rpm
+        pushd _site/rpm >/dev/null
+        echo "Getting RPM"
+        wget -q "https://github.com/${repo}/releases/download/${tag}/${rpm_file}"
+        (
+          if [ -n "$GPG_FINGERPRINT" ]
+          then
+            echo "Signing RPM"
+            rpm --define "%_signature gpg" --define "%_gpg_name ${GPG_FINGERPRINT}" --addsign "${rpm_file}"
+          fi
+        )
+        popd >/dev/null
+      fi
+    fi
+  done < "$REPO_PATH"
 
   if [ $GOT_DEB -eq 1 ]
   then
@@ -58,6 +90,17 @@ main() {
     gpg --detach-sign --armor --sign > Release.gpg < Release
     gpg --detach-sign --armor --sign --clearsign > InRelease < Release
     echo "DEB repo built"
+    popd >/dev/null
+  fi
+
+  if [ $GOT_RPM -eq 1 ]
+  then
+    pushd _site/rpm >/dev/null
+    echo "Scanning RPM packages and creating the Repo"
+    createrepo_c .
+    echo "Signing the Repo Metadata"
+    gpg --detach-sign --armor repodata/repomd.xml
+    echo "RPM repo built"
     popd >/dev/null
   fi
 }
