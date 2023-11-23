@@ -26,7 +26,7 @@ main() {
 
   while IFS= read -r repo;
   do
-    if release=$(curl -fqs https://api.github.com/repos/${repo}/releases/tags/${{ github.ref_name }})
+    if release=$(curl -fqs https://api.github.com/repos/${repo}/releases/tags/${$GITHUB_REF})
     then
       tag="$(echo "$release" | jq -r '.tag_name')"
       deb_file="$(echo "$release" | jq -r '.assets[] | select(.name | endswith(".deb")) | .name')"
