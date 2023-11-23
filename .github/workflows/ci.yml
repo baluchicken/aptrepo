@@ -28,7 +28,7 @@ jobs:
           do
             sleep 1
           done
-          sudo apt install -y jq coreutils gnupg2 dpkg-dev createrepo_c
+          sudo apt install -y jq coreutils gnupg2 dpkg-dev createrepo-c
 
       - name: Insert environment variables
         run: |
