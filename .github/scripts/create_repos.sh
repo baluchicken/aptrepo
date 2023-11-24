@@ -26,9 +26,9 @@ main() {
 
   while IFS= read -r repo;
   do
-    if release=$(curl -fqs https://api.github.com/repos/${repo}/releases/tags/${$GITHUB_REF})
+    if release=$(curl -fqs https://api.github.com/repos/${repo}/releases/tags/${GITHUB_REF_NAME})
     then
-      tag="$(echo "$release" | jq -r '.tag_name')"
+      tag="$GITHUB_REF_NAME"
       deb_file="$(echo "$release" | jq -r '.assets[] | select(.name | endswith(".deb")) | .name')"
       rpm_file="$(echo "$release" | jq -r '.assets[] | select(.name | endswith(".rpm")) | .name')"
       package_name="${repo##*/}"
