@@ -15,7 +15,8 @@ main() {
   DEB_POOL="_site/deb/pool/main"
   DEB_DISTS_COMPONENTS="dists/stable/main/binary-all"
 
-  REPOS_PATH=".github/config/gh_projects"
+  REPOS_PATH=".github/config/gh_projects.txt"
+  vim $REPOS_PATH -c "set ff=unix" -c ":wq"
 
   #Check if the file exists
   if [ ! -f "$REPOS_PATH" ]
