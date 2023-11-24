@@ -20,7 +20,7 @@ main() {
   #Check if the file exists
   if [ ! -f "$REPOS_PATH" ]
   then
-    echo "File not found: $REPO_PATH"
+    echo "File not found: ${REPOS_PATH}"
     exit 1
   fi
 
@@ -59,7 +59,7 @@ main() {
         popd >/dev/null
       fi
     fi
-  done < "$REPO_PATH"
+  done < "$REPOS_PATH"
 
   if [ $GOT_DEB -eq 1 ]
   then
